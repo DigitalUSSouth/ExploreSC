@@ -2,4 +2,5 @@
 exploresc-server/db.sqlite3
 exploresc-server/exploresc/__pycache__/
 exploresc-server/exploresc/settings.py
+exploresc-server/api/__pycache__/
 exploresc-server/ENV/*
