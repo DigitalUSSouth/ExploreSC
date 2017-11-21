@@ -28,7 +28,8 @@ foreach ($features as $feature){
     "latlng" => array($feature['geometry']['coordinates'][1],$feature['geometry']['coordinates'][0]),
     "options" => array(
       "title" => $feature['properties']['name']
-    )
+    ),
+    "popup"=> "<h1>".$feature['properties']['name']."</h1><strong>".$feature['properties']['cmt']."</strong><div>".preg_replace('<center>','',preg_replace('</center>','',$feature['properties']['desc']))."</div>"
   );
   $markers[] = $marker;
 }
@@ -52,7 +53,7 @@ var mks = L.markerClusterGroup();
 
 for (var i = 0; i < markers.length; i++) {
   mks.addLayer(L.marker(markers[i].latlng,markers[i].options)
-				.bindPopup(markers[i].options.title));
+				.bindPopup(markers[i].popup));
 }
 mymap.addLayer(mks)
 </script>
