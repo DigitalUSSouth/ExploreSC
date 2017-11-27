@@ -1,6 +1,8 @@
 <html>
 <head>
 <title>Map Prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
    integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
    crossorigin=""/>
@@ -44,6 +46,7 @@ var markers = <?php print json_encode($markers); ?>
 var mymap = L.map('mapid').setView([33.836081,-81.1637245], 8);
 tileserver = 'http://{s}.tiles.mapbox.com/v3/github.map-xgq2svrz/{z}/{x}/{y}.png'
 tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
+tileserver = 'http://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
 L.tileLayer(tileserver, {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
 
