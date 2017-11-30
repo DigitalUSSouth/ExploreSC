@@ -118,7 +118,12 @@
     <Compile Include="AppDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
+    <BundleResource Include="Resources\MarkerCluster.css" />
     <BundleResource Include="Resources\index.html" />
+    <BundleResource Include="Resources\leaflet.css" />
+    <BundleResource Include="Resources\leaflet.js" />
+    <BundleResource Include="Resources\leaflet.markercluster.js" />
+    <BundleResource Include="Resources\markers.js" />
   </ItemGroup>
   <Import Project="..\exploresc\exploresc.projitems" Label="Shared" Condition="Exists('..\exploresc\exploresc.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

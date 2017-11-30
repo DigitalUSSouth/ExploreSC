@@ -1,10 +1,45 @@
-﻿<!DOCTYPE html>
+
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <title>test</title>
-    </head>
-    <body>
-        <h1>test html</h1>
-    </body>
+<head>
+<title>Map Prototype</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+<link rel="stylesheet" href="leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+<link rel="stylesheet" href="MarkerCluster.css"
+   crossorigin=""/>
+<link rel="stylesheet" href="MarkerCluster.Default.css"
+   crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+<script src="leaflet.js"></script>
+<script src="leaflet.markercluster.js"></script>
+<style>
+#mapid { height: 100%; }
+</style>
+<script src="markers.js">
+</script>
+</head>
+<body>
+<div id="mapid"></div>
+<script>
+var mymap = L.map('mapid').setView([33.836081,-81.1637245], 8);
+tileserver = 'http://{s}.tiles.mapbox.com/v3/github.map-xgq2svrz/{z}/{x}/{y}.png'
+tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
+tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
+L.tileLayer(tileserver, {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+
+}).addTo(mymap);
+
+var mks = L.markerClusterGroup();
+
+for (var i = 0; i < markers.length; i++) {
+  mks.addLayer(L.marker(markers[i].latlng,markers[i].options)
+				.bindPopup(markers[i].popup));
+}
+mymap.addLayer(mks)
+</script>
+</body>
 </html>
