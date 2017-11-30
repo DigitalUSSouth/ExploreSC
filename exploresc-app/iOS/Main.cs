@@ -4,6 +4,11 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Xamarin.Forms;
+
+[assembly: Dependency(typeof(exploresc.iOS.BaseUrl_iOS))]
+
+
 
 namespace exploresc.iOS
 {
@@ -15,6 +20,15 @@ namespace exploresc.iOS
             // if you want to use a different Application Delegate class from "AppDelegate"
             // you can specify it here.
             UIApplication.Main(args, null, "AppDelegate");
+
         }
     }
+    public class BaseUrl_iOS : IBaseUrl
+    {
+        public string Get()
+        {
+            return NSBundle.MainBundle.BundlePath;
+        }
+    }
+
 }
