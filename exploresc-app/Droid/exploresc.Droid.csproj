@@ -129,6 +129,12 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\index.html" />
+    <AndroidAsset Include="Assets\leaflet.css" />
+    <AndroidAsset Include="Assets\leaflet.js" />
+    <AndroidAsset Include="Assets\leaflet.markercluster.js" />
+    <AndroidAsset Include="Assets\MarkerCluster.css" />
+    <AndroidAsset Include="Assets\MarkerCluster.Default.css" />
+    <AndroidAsset Include="Assets\markers.js" />
   </ItemGroup>
   <Import Project="..\exploresc\exploresc.projitems" Label="Shared" Condition="Exists('..\exploresc\exploresc.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
