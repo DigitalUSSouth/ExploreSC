@@ -8,8 +8,6 @@ using Xamarin.Forms;
 
 [assembly: Dependency(typeof(exploresc.iOS.BaseUrl_iOS))]
 
-
-
 namespace exploresc.iOS
 {
     public class Application

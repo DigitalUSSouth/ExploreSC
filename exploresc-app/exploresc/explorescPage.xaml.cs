@@ -11,8 +11,8 @@ namespace exploresc
 
             var source = new UrlWebViewSource
             {
-                //Url = DependencyService.Get<IBaseUrl>().Get() + "/index.html"
-                Url = "https://www.google.com/"
+                Url = DependencyService.Get<IBaseUrl>().Get() + "/index.html"
+                // = "https://www.digitalussouth.org/"
             };
             web_view.Source = source;
 
