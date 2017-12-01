@@ -17,6 +17,7 @@
 <script src="leaflet.markercluster.js"></script>
 <style>
 #mapid { height: 100%; }
+body {margin:0px; padding:0px}
 </style>
 <script src="markers.js">
 </script>
@@ -24,12 +25,11 @@
 <body>
 <div id="mapid"></div>
 <script>
-var mymap = L.map('mapid').setView([33.836081,-81.1637245], 8);
-tileserver = 'http://{s}.tiles.mapbox.com/v3/github.map-xgq2svrz/{z}/{x}/{y}.png'
-tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
+var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-81.1637245], 7.5);
+//tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
 tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
 L.tileLayer(tileserver, {
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+    attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>'
 
 }).addTo(mymap);
 
@@ -40,6 +40,8 @@ for (var i = 0; i < markers.length; i++) {
 				.bindPopup(markers[i].popup));
 }
 mymap.addLayer(mks)
+console.log(mks.getBounds())
+mymap.fitBounds(mks.getBounds())
 </script>
 </body>
 </html>

@@ -1,4 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:exploresc" x:Class="exploresc.explorescPage">
-    <WebView x:Name="mainWebView"/>
-</ContentPage>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:local="clr-namespace:exploresc"
+            x:Class="exploresc.explorescPage">
+    <local:mapPage />
+    <local:toursPage />
+    <local:searchPage />
+    <local:aboutPage />
+    <!--<NavigationPage Title="" Icon="">
+        <x:Arguments>
+            <local:SchedulePage />
+        </x:Arguments>
+    </NavigationPage>-->
+
+    
+</TabbedPage>
+
