@@ -5,8 +5,11 @@
     Title="Search">
 	<ContentPage.Content>
      <StackLayout Spacing="0" x:Name="layout">
-      <Button Text="Tour" VerticalOptions="Start"
-        HorizontalOptions="FillAndExpand" />
+       <maps:Map WidthRequest="320" HeightRequest="200"
+            x:Name="MyMap2"
+            IsShowingUser="true"
+            MapType="Hybrid"
+        />
 
     </StackLayout>
 	</ContentPage.Content>

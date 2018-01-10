@@ -5,7 +5,7 @@
     Title="Tours">
 	<ContentPage.Content>
         <StackLayout Spacing="0" x:Name="layout">
-      <Button Text="Tour" VerticalOptions="Start"
+      <Label Text="Tours" VerticalOptions="Start"
         HorizontalOptions="FillAndExpand" />
 
     </StackLayout>

@@ -5,9 +5,6 @@
     Title="Map">
 	<ContentPage.Content>
     <StackLayout Spacing="0" x:Name="layout">
-      <Button x:Name="testButton" VerticalOptions="FillAndExpand"
-            HorizontalOptions="FillAndExpand"
-            Clicked="OnButtonClicked" />
       <WebView x:Name="mainWebView" VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"/>
     </StackLayout>
