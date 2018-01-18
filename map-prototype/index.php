@@ -19,6 +19,36 @@
    crossorigin=""></script>
 <style>
 #mapid { height: 100%; }
+.btn {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 28;
+  -moz-border-radius: 28;
+  border-radius: 28px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+a.btn {
+  color:white;
+}
 </style>
 <script>
 <?php
@@ -31,7 +61,9 @@ foreach ($features as $feature){
     "options" => array(
       "title" => $feature['properties']['name']
     ),
-    "popup"=> "<h1>".$feature['properties']['name']."</h1><strong>".$feature['properties']['cmt']."</strong><div>".preg_replace('<center>','',preg_replace('</center>','',$feature['properties']['desc']))."</div>"
+    "popup"=> "<h1>".$feature['properties']['name']."</h1><strong>".$feature['properties']['cmt']."</strong><div>".preg_replace('<center>','',preg_replace('</center>','',$feature['properties']['desc']))
+    ."<p><a class=\"btn\" href=\"http://maps.apple.com/?daddr=".$feature['geometry']['coordinates'][1].",".$feature['geometry']['coordinates'][0]."&dirflg=d&t=h\">Get directions</a></p>"
+    ."</div>"
   );
   $markers[] = $marker;
 }
