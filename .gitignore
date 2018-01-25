@@ -4,3 +4,5 @@ exploresc-server/exploresc/__pycache__/
 exploresc-server/exploresc/settings.py
 exploresc-server/api/__pycache__/
 exploresc-server/ENV/*
+.vscode
+exploresc-server/api2/ENV

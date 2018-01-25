@@ -4,3 +4,4 @@ import json
 from pprint import pprint
 import MySQLdb as sql
 
+connection = my
