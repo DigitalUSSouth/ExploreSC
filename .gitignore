@@ -8,3 +8,4 @@ exploresc-server/ENV/*
 exploresc-server/api2/ENV
 exploresc-server/api2/db-config.py
 exploresc-server/api2/sceposts.json
+exploresc-server/api2/*markers.json
