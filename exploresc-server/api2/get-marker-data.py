@@ -29,7 +29,8 @@ for item in full_markers:
         "desc":item["properties"]["desc"],
         "geolocation": [item["geometry"]["coordinates"][1],item["geometry"]["coordinates"][0]],
         "category": None,
-        "ref": None
+        "ref": None,
+        "url": item["properties"]["link1_href"]
     }
     marker["tokens"] = tokenize_marker(marker)
     markers.append(marker)
