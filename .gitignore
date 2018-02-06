@@ -10,3 +10,4 @@ exploresc-server/api2/db-config.py
 exploresc-server/api2/sceposts.json
 exploresc-server/api2/*markers.json
 exploresc-server/api2/__pycache__/
+exploresc-server/api2/*swp
