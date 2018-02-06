@@ -27,7 +27,7 @@ def get_items_near():
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     latlng = str(lat)+","+str(lng)
-    r =  Req.Request("http://localhost:8983/solr/duss-indexing/select?q=*%3A*{!geofilt}&sfield=geolocation_machine&pt="+latlng+"&d=50&sort=geodist()+asc&wt=json&indent=true")
+    r =  Req.Request("http://localhost:8983/solr/duss-indexing/select?q=*%3A*{!geofilt}&sfield=geolocation_machine&pt="+parse.quote(latlng)+"&d=50&sort=geodist()+asc&wt=json&indent=true")
     resp = Req.urlopen(r)
     pprint(vars(resp))
     #json_text = json.dumps(resp.read(),ensure_ascii=False,indent=4, sort_keys=True)
