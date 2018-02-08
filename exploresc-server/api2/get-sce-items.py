@@ -3,6 +3,7 @@
 import json
 from pprint import pprint
 from nlputils import tokenize_text
+import time
 start_time = time.time()
 
 exec(open("./db-config.py").read())
@@ -15,11 +16,21 @@ cursor.execute(query)
 counter = 1
 posts = {}
 for doc in cursor:
-    post_type = doc[6]
+    allowed_types = ['entry','document','image','recording','video']
+    if doc[6] not in allowed_types:
+        continue
+    type_url = {'entry':'entries',
+        'document':'documents',
+        'image':'images',
+        'recording':'recordings',
+        'video':'videos'
+        }
+    post_type = all
+    post_type_url = type_url[doc[6]]
     docdict = {
         'id': doc[0],
         'title': doc[1],
-        'url': "http://www.scencyclopedia.org/sce/entries/"+str(doc[2]),
+        'url': "http://www.scencyclopedia.org/sce/"+post_type_url+"/"+str(doc[2]),
         'date': str(doc[3]),
         'excerpt': doc[4],
         'content': doc[5],
