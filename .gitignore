@@ -11,3 +11,4 @@ exploresc-server/api2/sceposts.json
 exploresc-server/api2/*markers.json
 exploresc-server/api2/__pycache__/
 exploresc-server/api2/*swp
+exploresc-server/tileserver/postgresql/south-carolina-latest.osm.pbf
