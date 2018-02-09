@@ -15,7 +15,7 @@ COPY setupdb.sh /setupdb.sh
 COPY db.sh /db.sh
 COPY loadmap.sh /loadmap.sh
 COPY initdb.sql /initdb.sql
-COPY south-carolina-latest.osm.pdf /home/renderaccount/data/south-carolina-latest.osm.pbf
+COPY south-carolina-latest.osm.pbf /home/renderaccount/data/south-carolina-latest.osm.pbf
 RUN useradd -ms /bin/bash renderaccount
 COPY build.sh /home/renderaccount/build.sh
 USER postgres
@@ -25,8 +25,17 @@ WORKDIR /home/renderaccount
 RUN /home/renderaccount/build.sh
 USER postgres
 RUN /loadmap.sh
+USER root
+COPY getshapefiles.sh /getshapefiles.sh
+RUN /getshapefiles.sh
+COPY renderd.conf /usr/local/etc/renderd.conf
+COPY mod_tile.conf /etc/apache2/conf-available/mod_tile.conf
+COPY apache-conf.conf /etc/apache2/sites-available/000-default.conf
+COPY apacheconf.sh /apacheconf.sh
+#WORKDIR /home/renderaccount/src/openstreetmap-carto/
+RUN /apacheconf.sh
 #RUN a2enmod rewrite
 #COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
 #RUN service apache2 start
-EXPOSE 5432
+EXPOSE 80
 #ENTRYPOINT bash &&
