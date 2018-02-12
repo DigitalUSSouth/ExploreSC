@@ -1,7 +1,23 @@
 #!/bin/bash
+
+
+
 mkdir /home/renderaccount/src
 cd /home/renderaccount/src
-git clone git://github.com/openstreetmap/mod_tile.git
+
+git clone git://github.com/openstreetmap/osm2pgsql.git
+cd osm2pgsql
+
+mkdir build && cd build
+cmake ..
+make
+make install
+
+
+
+cd /home/renderaccount/src
+
+git clone -b switch2osm git://github.com/SomeoneElseOSM/mod_tile.git
 cd mod_tile
 ./autogen.sh
 ./configure
