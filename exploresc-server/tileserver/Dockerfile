@@ -20,3 +20,26 @@ RUN /mod_tile.sh
 RUN apt install -y curl unzip gdal-bin mapnik-utils node-carto
 COPY mapnik.sh /mapnik.sh
 RUN /mapnik.sh
+
+#configure renderd
+COPY renderd.conf /usr/local/etc/renderd.conf
+COPY renderd.sh /renderd.sh
+RUN /renderd.sh
+
+#install apache
+RUN apt install -y apache2
+COPY mod_tile.conf /etc/apache2/mods-available/mod_tile.load
+RUN ln -s /etc/apache2/mods-available/mod_tile.load /etc/apache2/mods-enabled/
+COPY apache.sh /apache.sh
+RUN /apache.sh
+COPY apache-conf.conf /etc/apache2/sites-enabled/000-default.conf
+
+#setup supervisor
+RUN apt install -y python-setuptools && easy_install supervisor
+COPY startdb.sh /startdb.sh
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisorprograms.ini /etc/supervisor/conf.d/programs.ini
+
+EXPOSE 80
+
+ENTRYPOINT supervisord -c /etc/supervisor/supervisord.conf -n
