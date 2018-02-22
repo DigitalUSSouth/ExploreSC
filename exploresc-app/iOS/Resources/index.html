@@ -65,6 +65,18 @@ for (var i = 0; i < markers.length; i++) {
 mymap.addLayer(mks)
 console.log(mks.getBounds())
 mymap.fitBounds(mks.getBounds())
-</script>
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        return [0,0];
+    }
+}
+function showPosition(position) {
+    return [position.coords.latitude,position.coords.longitude];
+}
+getLocation();
+    </script>
 </body>
 </html>
