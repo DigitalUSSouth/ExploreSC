@@ -1,0 +1,108 @@
+
+<html>
+    <head>
+    <title>Map Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <link rel="stylesheet" href="leaflet.css"
+       integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+       crossorigin=""/>
+    <link rel="stylesheet" href="MarkerCluster.css"
+       crossorigin=""/>
+    <link rel="stylesheet" href="MarkerCluster.Default.css"
+       crossorigin=""/>
+    
+        <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="leaflet.js"></script>
+    <script src="leaflet.markercluster.js"></script>
+    <style>
+    #mapid {
+        height: 100%;
+        display: none;
+    }
+    body {margin:0px; padding:0px}
+    .btn {
+      background: #3498db;
+      background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+      background-image: linear-gradient(to bottom, #3498db, #2980b9);
+      -webkit-border-radius: 28;
+      border-radius: 28px;
+      font-family: Arial;
+      color: #ffffff;
+      font-size: 20px;
+      padding: 10px 20px 10px 20px;
+      text-decoration: none;
+    }
+    
+    .btn:hover {
+      background: #3cb0fd;
+      background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+      background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+      text-decoration: none;
+    }
+    
+    a.btn {
+      color:white;
+    }
+    </style>
+    <script src="markers.js">
+    </script>
+    <script>
+    function getSearchResults(){
+        var query = document.getElementById('query').value;
+        console.log(query)
+        safe_query = encodeURIComponent(query)
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://exploresc.digitalussouth.org/api/search?q='+safe_query);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                console.log(xhr.responseText);
+            }
+            else {
+                console.log('Request failed.  Returned status of ' + xhr.status);
+            }
+        };
+        xhr.send();
+    }
+    </script>
+    </head>
+    <body>
+    <div id="mapid"></div>
+    <div id="searchdiv">
+        <form onsubmit="getSearchResults(); return false;">
+            <input type="text" name="query" id="query"><input type="submit">
+        </form>
+    </div>
+    <script>
+    function loadMap(){
+        var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-81.1637245], 7.5);
+        tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
+        L.tileLayer(tileserver, {
+            attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>'
+        
+        }).addTo(mymap);
+        
+        var mks = L.markerClusterGroup();
+        
+        for (var i = 0; i < markers.length; i++) {
+        mks.addLayer(L.marker(markers[i].latlng,markers[i].options)
+                        .bindPopup(markers[i].popup));
+        }
+        mymap.addLayer(mks)
+        console.log(mks.getBounds())
+        mymap.fitBounds(mks.getBounds())
+        getLocation();
+    }
+    function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition);
+            } else {
+                return [0,0];
+            }
+    }
+    function showPosition(position) {
+            return [position.coords.latitude,position.coords.longitude];
+    }
+    </script>
+    </body>
+    </html>
