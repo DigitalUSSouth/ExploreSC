@@ -7,6 +7,9 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.OS;
+using Xamarin.Forms;
+
+[assembly: Dependency(typeof(exploresc.Droid.BaseUrl_Android))]
 
 namespace exploresc.Droid
 {
@@ -21,8 +24,17 @@ namespace exploresc.Droid
             base.OnCreate(bundle);
 
             global::Xamarin.Forms.Forms.Init(this, bundle);
+            Xamarin.FormsMaps.Init(this, bundle);
 
             LoadApplication(new App());
+        }
+    }
+
+    public class BaseUrl_Android : IBaseUrl
+    {
+        public string Get()
+        {
+            return "file:///android_asset";
         }
     }
 }
