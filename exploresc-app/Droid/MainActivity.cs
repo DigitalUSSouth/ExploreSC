@@ -34,7 +34,7 @@ namespace exploresc.Droid
     {
         public string Get()
         {
-            return "file:///android_asset/";
+            return "file:///android_asset";
         }
     }
 }
