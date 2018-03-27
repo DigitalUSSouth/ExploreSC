@@ -52,7 +52,8 @@ var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-
 //tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
 tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
 L.tileLayer(tileserver, {
-    attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>'
+    attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>',
+    detectRetina: true
 
 }).addTo(mymap);
 
