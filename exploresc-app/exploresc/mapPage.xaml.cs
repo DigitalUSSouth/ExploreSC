@@ -19,6 +19,22 @@ namespace exploresc
                 // = "https://www.digitalussouth.org/"
             };
             web_view.Source = source;
+            web_view.Navigating += (s, e) =>
+            {
+                if (e.Url.StartsWith("https://www.google.com"))
+                {
+                    try
+                    {
+                        var uri = new Uri(e.Url);
+                        Device.OpenUri(uri);
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    e.Cancel = true;
+                }
+            };
 
         }
     }
