@@ -46,6 +46,8 @@ a.btn {
 </script>
 </head>
 <body>
+<h1 id="location"></h1>
+<h2>hi</h2>
 <div id="mapid"></div>
 <script>
 var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-81.1637245], 7.5);
@@ -67,6 +69,7 @@ mymap.addLayer(mks)
 console.log(mks.getBounds())
 mymap.fitBounds(mks.getBounds())
 
+
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition);
@@ -75,9 +78,22 @@ function getLocation() {
     }
 }
 function showPosition(position) {
-    return [position.coords.latitude,position.coords.longitude];
+    var loc = position.coords.latitude + "," + position.coords.longitude
+    document.getElementById("location").innerHTML = loc
+    alert(loc);
+    return [position.coords.latitude,position.coords.longitude]
 }
-getLocation();
+//getLocation();
+//showPosition(position);
+//alert(userLocation)
+
+function updateMap(lat,lng){
+    var loc = lat + "," +lng;
+      document.getElementById("location").innerHTML = loc
+
+}
+
+
     </script>
 </body>
 </html>
