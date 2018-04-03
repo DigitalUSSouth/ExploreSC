@@ -13,14 +13,9 @@ namespace exploresc
 
             InitializeComponent();
             var web_view = mainWebView;
-
-
-            //locator.PositionChanged += (sender, e) => {
-                //var position = e.Position;
-                //web_view.Eval(string.Format("updateMap({0}, {1})", position.Latitude, position.Longitude));
-                //latitudeLabel.Text = position.Latitude;
-                //longitudeLabel.Text = position.Longitude;
-            //};
+            //CrossGeolocator.Current.AllowsBackgroundUpdates = true;
+            var loc = CrossGeolocator.Current;
+            loc.PositionChanged += Current_PositionChanged;
 
             //Debug.WriteLine("Position Status: {0}", position.Timestamp);
             //Debug.WriteLine("Position Latitude: {0}", position.Latitude);
@@ -56,7 +51,7 @@ namespace exploresc
 
                         var position = await locator.GetPositionAsync(TimeSpan.FromSeconds(2));
 
-                        web_view.Eval(string.Format("updateMap({0}, {1})", position.Latitude, position.Longitude));
+                        web_view.Eval(string.Format("updateMap({0}, {1}, {2})", position.Latitude, position.Longitude, position.Accuracy));
                     }
                     catch (Exception)
                     {
@@ -64,7 +59,19 @@ namespace exploresc
 
                     e.Cancel = true;
                 }
+                if (!loc.IsListening)
+                {
+                    await loc.StartListeningAsync(TimeSpan.FromSeconds(1), 10);
+                }
             };
+
+            void Current_PositionChanged(object sender, Plugin.Geolocator.Abstractions.PositionEventArgs e){
+                System.Console.WriteLine("position changed");
+
+                var position = e.Position;
+                web_view.Eval(string.Format("updateMap({0}, {1}, {2})", position.Latitude, position.Longitude,position.Accuracy));
+
+            }
 
         }
     }

@@ -59,7 +59,7 @@ a.btn {
 <div id="mapid"></div>
 <script>
 var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-81.1637245], 7.5);
-//tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
+//tileserver = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
 tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
 L.tileLayer(tileserver, {
     attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>',
@@ -77,7 +77,7 @@ mymap.addLayer(mks)
 console.log(mks.getBounds())
 mymap.fitBounds(mks.getBounds())
 
-
+/*
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition);
@@ -90,19 +90,24 @@ function showPosition(position) {
     document.getElementById("location").innerHTML = loc
     alert(loc);
     return [position.coords.latitude,position.coords.longitude]
-}
+}*/
 
-function updateMap(lat,lng){
+function updateMap(lat,lng,acc){
     if (lat==0 || lng==0) return;
-    var loc = lat + "," +lng;
-    //document.getElementById("location").innerHTML = loc
-    mymap.flyTo([lat,lng],14)
-    if (mymap.hasLayer(positionMarker)){
+    var loc = lat + "," +lng + " -- " + acc;
+    document.getElementById("location").innerHTML = loc
+    mymap.flyTo([lat,lng],16);
+    if (positionAvailable){
       positionMarker.setLatLng([lat,lng]);
+      accuracyCircle.setLatLng([lat,lng]);
     }
     else {
       mymap.addLayer(positionMarker);
       positionMarker.setLatLng([lat,lng]);
+      mymap.addLayer(accuracyCircle);
+      accuracyCircle.setLatLng([lat,lng]);
+      accuracyCircle.setRadius(acc);
+      positionAvailable = true;
     }
     return loc;
 }
@@ -127,6 +132,8 @@ function ready(callback){
   L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
       
   positionMarker = L.marker([33.836081,-81.1637245], {icon: redMarker});
+  accuracyCircle = L.circle([50.5, 30.5], {radius: 200});
+  positionAvailable = false;
       
   ready(function(){
     window.location = "index.html#getLoc";
