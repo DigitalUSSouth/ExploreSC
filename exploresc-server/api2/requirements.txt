@@ -1,3 +1,4 @@
 pymysql
 nltk
 flask
+numpy

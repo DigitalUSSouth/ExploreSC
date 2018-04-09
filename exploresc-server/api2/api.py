@@ -1,4 +1,4 @@
-from flask import Flask, Response,request
+from flask import Flask, Response,request,render_template
 from pprint import pprint
 import json
 from urllib import request as Req, parse
@@ -43,7 +43,20 @@ def get_rel():
     #with open("sceposts.json","r") as json_file:
     #    posts = json.load(json_file)
     #json_text = json.dumps(posts['image'],ensure_ascii=False,indent=4, sort_keys=True)
-    response = Response("resp")
+    r =  Req.Request('https://www.digitalussouth.org/api?q=pickens&start=0&fq[]="South+Carolina+Encyclopedia"&fq_field[]=archive_facet')
+    resp = Req.urlopen(r)
+    #pprint(vars(resp))
+    data = json.loads(resp.read().decode())
+    #data
+    
+    #print(type(data))
+    data = data['response']
+    
+    response = Response(render_template('showMore.html',title=data['error']))
+    #response = Response(resp.read())
+
     response.headers.add('Access-Control-Allow-Origin', '*')
-    #response.headers['Content-Type'] = 'application/json'
     return response
+    #response.headers['Content-Type'] = 'application/json'
+    #return response
+    #

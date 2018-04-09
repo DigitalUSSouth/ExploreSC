@@ -64,9 +64,18 @@ a.btn {
     position:absolute;
 bottom:0px;
     left: 0px;
-    z-index: 10000;
+    z-index: 1000;
     padding-bottom:1em;
     padding-left:.5em;
+}
+
+#moreDiv {
+    position:relative;
+
+    height: 100%;
+    width: 100%;
+    z-index: 10000;
+    display:none;
 }
 </style>
 <script src="markers_android.js">
@@ -74,6 +83,7 @@ bottom:0px;
 </head>
 <body>
 <h1 id="location"></h1>
+<div id="moreDiv"></div>
 <div id="mapid">
 </div>
     <div class="bottom-left" id="recenterDiv" style="display:none">
@@ -199,8 +209,12 @@ function ready(callback){
       var markerId = obj.getAttribute('data-link'); 
       callAjax("http://192.168.132.144:4000/getRel?link="+encodeURIComponent(markerId),function(response){
         console.log(response);
+        var d = document.getElementById('moreDiv');
+        d.style.display = 'block';
+        document.getElementById("recenterDiv").style.display = 'none';
+        d.innerHTML = response;
       });
-      console.log(markerId);
+      //console.log(markerId);
       return false;
   }
   function callAjax(url, callback){
