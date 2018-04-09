@@ -4,17 +4,35 @@
 <title>Map Prototype</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-<link rel="stylesheet" href="leaflet.css"
-   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
-   crossorigin=""/>
+<link rel="stylesheet" href="leaflet.css" />
+   <!--integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+/>-->
 <link rel="stylesheet" href="MarkerCluster.css"
-   crossorigin=""/>
+/>
 <link rel="stylesheet" href="MarkerCluster.Default.css"
-   crossorigin=""/>
+/>
+   
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.9/css/all.css" integrity="sha384-5SOiIsAziJl6AWe0HWRKTXlfcSHKmYV4RBF18PPJ173Kzn7jzMyFuTtk8JA7QQG1" crossorigin="anonymous">
+
+<link rel="stylesheet" href="awesomemarkers/leaflet.awesome-markers.css">
+
+
+
 
     <!-- Make sure you put this AFTER Leaflet's CSS -->
 <script src="leaflet.js"></script>
 <script src="leaflet.markercluster.js"></script>
+
+<script src="awesomemarkers/leaflet.awesome-markers.min.js"></script>
+
+
+
+<script src='mapbox-gl.js'></script>
+<link href='mapbox-gl.css' rel='stylesheet' />
+
+<script src="leaflet-mapbox-gl.js"></script>
+<script src="mapbox-token.js"></script>
+
 <style>
 #mapid { height: 100%; }
 body {margin:0px; padding:0px}
@@ -41,22 +59,41 @@ body {margin:0px; padding:0px}
 a.btn {
   color:white;
 }
+
+.bottom-left{
+    position:absolute;
+bottom:0px;
+    left: 0px;
+    z-index: 10000;
+    padding-bottom:1em;
+    padding-left:.5em;
+}
 </style>
 <script src="markers.js">
 </script>
 </head>
 <body>
 <h1 id="location"></h1>
-<h2>hi</h2>
-<div id="mapid"></div>
+<div id="mapid">
+</div>
+    <div class="bottom-left" id="recenterDiv" style="display:none">
+        <div>
+            <a onclick="recenterMap()" class="btn">Recenter</a>
+        </div>
+    </div>
 <script>
-var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-81.1637245], 7.5);
-//tileserver = 'http://192.168.132.138:3001/hot/{z}/{x}/{y}.png'
+var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0,maxZoom:18})//.setView([33.836081,-81.1637245], 7.5);
+//tileserver = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
 tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
-L.tileLayer(tileserver, {
+/*L.tileLayer(tileserver, {
     attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>',
     detectRetina: true
 
+}).addTo(mymap);*/
+
+var gl = L.mapboxGL({
+    accessToken: token,
+    style: 'mapbox://styles/mapbox/bright-v8'
 }).addTo(mymap);
 
 var mks = L.markerClusterGroup();
@@ -69,7 +106,7 @@ mymap.addLayer(mks)
 console.log(mks.getBounds())
 mymap.fitBounds(mks.getBounds())
 
-
+/*
 function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition);
@@ -82,18 +119,77 @@ function showPosition(position) {
     document.getElementById("location").innerHTML = loc
     alert(loc);
     return [position.coords.latitude,position.coords.longitude]
+}*/
+
+function updateMap(lat,lng,acc){
+    lastPos = [lat,lng,acc];
+    if (lat==0 || lng==0) return;
+    var loc = lat + "," +lng + " -- " + acc;
+    //document.getElementById("location").innerHTML = loc
+    if (centerMap==true){
+        userMove = false;
+        mymap.flyTo([lat,lng],mymap.getZoom());
+        userMove = true;
+    }
+    if (positionAvailable){
+      positionMarker.setLatLng([lat,lng]);
+      accuracyCircle.setLatLng([lat,lng]);
+    }
+    else {
+      mymap.addLayer(positionMarker);
+      positionMarker.setLatLng([lat,lng]);
+      mymap.addLayer(accuracyCircle);
+      accuracyCircle.setLatLng([lat,lng]);
+      accuracyCircle.setRadius(acc);
+      positionAvailable = true;
+    }
+    return loc;
 }
-//getLocation();
-//showPosition(position);
-//alert(userLocation)
 
-function updateMap(lat,lng){
-    var loc = lat + "," +lng;
-      document.getElementById("location").innerHTML = loc
-
+function ready(callback){
+    // in case the document is already rendered
+    if (document.readyState!='loading') callback();
+    // modern browsers
+    else if (document.addEventListener) document.addEventListener('DOMContentLoaded', callback);
+    // IE <= 8
+    else document.attachEvent('onreadystatechange', function(){
+        if (document.readyState=='complete') callback();
+    });
 }
 
 
+    // Creates a blue marker with the compass icon - this is the user's location
+  var redMarker = L.AwesomeMarkers.icon({
+    icon: 'compass',
+    markerColor: 'blue'
+  });
+  L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
+
+  positionMarker = L.marker([33.836081,-81.1637245], {icon: redMarker});
+  accuracyCircle = L.circle([50.5, 30.5], {radius: 200});
+  positionAvailable = false;
+  centerMap = true;
+  userMove = true;
+  mymap.on('movestart',function(e){
+    if (userMove){
+        centerMap = false;
+        document.getElementById("recenterDiv").style.display = 'block';
+    }
+  });
+  lastPos = [0,0,0]
+  function recenterMap(){
+    centerMap = true;
+    if (lastPos[0]==0 || lastPos[1]==0) return;
+
+    mymap.flyTo([lastPos[0],lastPos[1]],mymap.getZoom());
+    //updateMap(lastPos[0],lastPos[1],lastPos[2]);
+    document.getElementById("recenterDiv").style.display = 'none';
+
+  }
+
+  ready(function(){
+    window.location = "index.html#getLoc";
+  });
     </script>
 </body>
 </html>

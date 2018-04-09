@@ -24,6 +24,16 @@
 <script src="leaflet.markercluster.js"></script>
 
 <script src="awesomemarkers/leaflet.awesome-markers.min.js"></script>
+
+
+
+<script src='mapbox-gl.js'></script>
+<link href='mapbox-gl.css' rel='stylesheet' />
+
+<script src="leaflet-mapbox-gl.js"></script>
+
+<script src="mapbox-token.js"></script>
+
 <style>
 #mapid { height: 100%; }
 body {margin:0px; padding:0px}
@@ -50,21 +60,43 @@ body {margin:0px; padding:0px}
 a.btn {
   color:white;
 }
+
+.bottom-left{
+    position:absolute;
+bottom:0px;
+    left: 0px;
+    z-index: 10000;
+    padding-bottom:1em;
+    padding-left:.5em;
+}
 </style>
 <script src="markers.js">
 </script>
 </head>
 <body>
 <h1 id="location"></h1>
-<div id="mapid"></div>
+<div id="mapid">
+</div>
+    <div class="bottom-left" id="recenterDiv" style="display:none">
+        <div>
+            <a onclick="recenterMap()" class="btn">Recenter</a>
+        </div>
+    </div>
+
 <script>
-var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0})//.setView([33.836081,-81.1637245], 7.5);
+var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0,maxZoom:18})//.setView([33.836081,-81.1637245], 7.5);
 //tileserver = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
 tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
-L.tileLayer(tileserver, {
+/*L.tileLayer(tileserver, {
     attribution: '&copy; OpenStreetMap | Historical Marker Database | <a href="license">License</a>',
     detectRetina: true
 
+}).addTo(mymap);*/
+
+
+var gl = L.mapboxGL({
+    accessToken: token,
+    style: 'mapbox://styles/mapbox/bright-v8'
 }).addTo(mymap);
 
 var mks = L.markerClusterGroup();
@@ -93,10 +125,15 @@ function showPosition(position) {
 }*/
 
 function updateMap(lat,lng,acc){
+    lastPos = [lat,lng,acc];
     if (lat==0 || lng==0) return;
     var loc = lat + "," +lng + " -- " + acc;
     document.getElementById("location").innerHTML = loc
-    mymap.flyTo([lat,lng],16);
+    if (centerMap==true){
+        userMove = false;
+        mymap.flyTo([lat,lng],mymap.getZoom());
+        userMove = true;
+    }
     if (positionAvailable){
       positionMarker.setLatLng([lat,lng]);
       accuracyCircle.setLatLng([lat,lng]);
@@ -130,11 +167,29 @@ function ready(callback){
     markerColor: 'blue'
   });
   L.AwesomeMarkers.Icon.prototype.options.prefix = 'fa';
-      
+
   positionMarker = L.marker([33.836081,-81.1637245], {icon: redMarker});
   accuracyCircle = L.circle([50.5, 30.5], {radius: 200});
   positionAvailable = false;
-      
+  centerMap = true;
+  userMove = true;
+  mymap.on('movestart',function(e){
+    if (userMove){
+        centerMap = false;
+        document.getElementById("recenterDiv").style.display = 'block';
+    }
+  });
+  lastPos = [0,0,0]
+  function recenterMap(){
+    centerMap = true;
+    if (lat==0 || lng==0) return;
+
+    mymap.flyTo([lastPos[0],lastPos[1]],mymap.getZoom());
+    //updateMap(lastPos[0],lastPos[1],lastPos[2]);
+    document.getElementById("recenterDiv").style.display = 'none';
+
+  }
+
   ready(function(){
     window.location = "index.html#getLoc";
   });

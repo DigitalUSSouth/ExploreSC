@@ -47,11 +47,14 @@ namespace exploresc
                 {
                     try
                     {
+                        System.Console.WriteLine("location callback");
+
                         var locator = CrossGeolocator.Current;
 
-                        var position = await locator.GetPositionAsync(TimeSpan.FromSeconds(2));
+                        var position = await locator.GetPositionAsync();//TimeSpan.FromSeconds(10));
 
                         web_view.Eval(string.Format("updateMap({0}, {1}, {2})", position.Latitude, position.Longitude, position.Accuracy));
+
                     }
                     catch (Exception)
                     {

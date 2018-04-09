@@ -185,6 +185,20 @@
     <AndroidAsset Include="Assets\images\marker-icon-2x.png" />
     <AndroidAsset Include="Assets\images\marker-icon.png" />
     <AndroidAsset Include="Assets\images\marker-shadow.png" />
+    <AndroidAsset Include="Assets\leaflet-mapbox-gl.js" />
+    <AndroidAsset Include="Assets\mapbox-token.js" />
+    <AndroidAsset Include="Assets\awesomemarkers\leaflet.awesome-markers.css" />
+    <AndroidAsset Include="Assets\awesomemarkers\leaflet.awesome-markers.js" />
+    <AndroidAsset Include="Assets\awesomemarkers\leaflet.awesome-markers.min.js" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-matte.png" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-matte%402x.png" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-plain.png" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-shadow.png" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-shadow%402x.png" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-soft.png" />
+    <AndroidAsset Include="Assets\awesomemarkers\images\markers-soft%402x.png" />
+    <AndroidAsset Include="Assets\mapbox-gl.css" />
+    <AndroidAsset Include="Assets\mapbox-gl.js" />
   </ItemGroup>
   <Import Project="..\exploresc\exploresc.projitems" Label="Shared" Condition="Exists('..\exploresc\exploresc.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

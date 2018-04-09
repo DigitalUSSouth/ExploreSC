@@ -24,7 +24,7 @@
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchFastDev>true</MtouchFastDev>
     <IOSDebuggerPort>36552</IOSDebuggerPort>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
     <PlatformTarget>x86</PlatformTarget>
@@ -153,6 +153,8 @@
     <BundleResource Include="Resources\awesomemarkers\images\markers-shadow%402x.png" />
     <BundleResource Include="Resources\awesomemarkers\images\markers-soft.png" />
     <BundleResource Include="Resources\awesomemarkers\images\markers-soft%402x.png" />
+    <BundleResource Include="Resources\leaflet-mapbox-gl.js" />
+    <BundleResource Include="Resources\mapbox-token.js" />
   </ItemGroup>
   <Import Project="..\exploresc\exploresc.projitems" Label="Shared" Condition="Exists('..\exploresc\exploresc.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
