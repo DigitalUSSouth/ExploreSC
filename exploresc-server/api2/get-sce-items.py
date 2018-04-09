@@ -25,7 +25,7 @@ for doc in cursor:
         'recording':'recordings',
         'video':'videos'
         }
-    post_type = all
+    post_type = doc[6]
     post_type_url = type_url[doc[6]]
     docdict = {
         'id': doc[0],
