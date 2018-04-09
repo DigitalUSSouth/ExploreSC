@@ -36,3 +36,14 @@ def get_items_near():
     response = Response(resp.read())
     response.headers['Content-Type'] = 'application/json'
     return response
+
+@app.route('/getRel', methods=['GET'])
+#@crossdomain(origin='*')
+def get_rel():
+    #with open("sceposts.json","r") as json_file:
+    #    posts = json.load(json_file)
+    #json_text = json.dumps(posts['image'],ensure_ascii=False,indent=4, sort_keys=True)
+    response = Response("resp")
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    #response.headers['Content-Type'] = 'application/json'
+    return response

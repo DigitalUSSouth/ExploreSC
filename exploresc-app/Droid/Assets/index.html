@@ -69,7 +69,7 @@ bottom:0px;
     padding-left:.5em;
 }
 </style>
-<script src="markers.js">
+<script src="markers_android.js">
 </script>
 </head>
 <body>
@@ -98,10 +98,15 @@ var gl = L.mapboxGL({
 
 var mks = L.markerClusterGroup();
 
+var mapMarkers = {}
+
 for (var i = 0; i < markers.length; i++) {
-  mks.addLayer(L.marker(markers[i].latlng,markers[i].options)
-				.bindPopup(markers[i].popup));
+  var marker = L.marker(markers[i].latlng,markers[i].options)
+                .bindPopup(markers[i].popup);
+  mapMarkers[markers[i]['markerId']] = marker;
+  mks.addLayer(marker);
 }
+//console.log(mapMarkers);
 mymap.addLayer(mks)
 console.log(mks.getBounds())
 mymap.fitBounds(mks.getBounds())
@@ -190,6 +195,25 @@ function ready(callback){
   ready(function(){
     window.location = "index.html#getLoc";
   });
+  function showMore(obj){
+      var markerId = obj.getAttribute('data-link'); 
+      callAjax("http://192.168.132.144:4000/getRel?link="+encodeURIComponent(markerId),function(response){
+        console.log(response);
+      });
+      console.log(markerId);
+      return false;
+  }
+  function callAjax(url, callback){
+    var xmlhttp;
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+            callback(xmlhttp.responseText);
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  }
     </script>
 </body>
 </html>
