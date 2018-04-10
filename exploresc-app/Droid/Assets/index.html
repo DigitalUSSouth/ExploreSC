@@ -77,6 +77,9 @@ bottom:0px;
     z-index: 10000;
     display:none;
 }
+.more-container{
+    padding:1em;
+}
 </style>
 <script src="markers_android.js">
 </script>
@@ -207,15 +210,22 @@ function ready(callback){
   });
   function showMore(obj){
       var markerId = obj.getAttribute('data-link'); 
-      callAjax("http://192.168.132.144:4000/getRel?link="+encodeURIComponent(markerId),function(response){
-        console.log(response);
+      url = "http://192.168.132.144:4000/getRel?link="+encodeURIComponent(markerId);
+      callAjax(url,function(response){
+        //console.log(response);
         var d = document.getElementById('moreDiv');
         d.style.display = 'block';
         document.getElementById("recenterDiv").style.display = 'none';
+        document.getElementById("mapid").style.display = 'none';
         d.innerHTML = response;
       });
       //console.log(markerId);
       return false;
+  }
+  function backToMap(){
+    document.getElementById('moreDiv').style.display = 'none';
+    document.getElementById("recenterDiv").style.display = 'block';
+    document.getElementById("mapid").style.display = 'block';
   }
   function callAjax(url, callback){
     var xmlhttp;

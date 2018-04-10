@@ -3,6 +3,7 @@ from pprint import pprint
 import json
 from urllib import request as Req, parse
 app = Flask(__name__)
+import re,cgi
 
 @app.route('/getAllSCEEntries')
 def get_all_sce_entries():
@@ -29,7 +30,7 @@ def get_items_near():
     latlng = str(lat)+","+str(lng)
     r =  Req.Request("http://localhost:8983/solr/duss-indexing/select?q=*%3A*{!geofilt}&sfield=geolocation_machine&pt="+
         parse.quote(latlng)+
-        "&d=50&sort=geodist()+asc&rows=10&wt=json&indent=true")
+        '&d=50&sort=geodist()+asc&rows=10&fq=archive:"Historical+Marker+Database"&wt=json&indent=true')
     resp = Req.urlopen(r)
     pprint(vars(resp))
     #json_text = json.dumps(resp.read(),ensure_ascii=False,indent=4, sort_keys=True)
@@ -40,23 +41,61 @@ def get_items_near():
 @app.route('/getRel', methods=['GET'])
 #@crossdomain(origin='*')
 def get_rel():
-    #with open("sceposts.json","r") as json_file:
-    #    posts = json.load(json_file)
+    with open("markers_api.json","r") as json_file:
+        markers = json.load(json_file)
     #json_text = json.dumps(posts['image'],ensure_ascii=False,indent=4, sort_keys=True)
-    r =  Req.Request('https://www.digitalussouth.org/api?q=pickens&start=0&fq[]="South+Carolina+Encyclopedia"&fq_field[]=archive_facet')
-    resp = Req.urlopen(r)
-    #pprint(vars(resp))
-    data = json.loads(resp.read().decode())
-    #data
-    
-    #print(type(data))
-    data = data['response']
-    
-    response = Response(render_template('showMore.html',title=data['error']))
-    #response = Response(resp.read())
+    markerId = request.args.get('link')
+    if markerId in markers:
+        text = markers[markerId]['text']
+        #print(text)
+        query = text[:150].replace(':','').replace('(','').replace(')','').replace('[','').replace(']','')
+        print(query)
+        query = parse.quote(strip_html(query))
+        url = 'https://www.digitalussouth.org/api?q='+ query +'&start=0&fq[]="South+Carolina+Encyclopedia"&fq_field[]=archive_facet'
+        print(url)
+        print(query)
+        r =  Req.Request(url)
+        resp = Req.urlopen(r)
+        data = json.loads(resp.read().decode())
+
+        if data['error'] == "None":
+            if data['response']['numFound'] > 0:
+                docs = []
+                if data['response']['numFound']>10:
+                    docs = data['response']['docs'][:10]
+                else:
+                    docs = data['response']['docs']
+                stripped_docs = []
+                for doc in docs:
+                    new_doc = {
+                        'url':doc['url'],
+                        'title':doc['title'],
+                        'excerpt':strip_html(doc['full_text'][:150])
+                    }
+                    stripped_docs.append(new_doc)
+                response = Response(render_template('showMore.html',title=markers[markerId]['options']['title'],docs=stripped_docs))
+        else:
+            response = Response(render_template('No results found'))
+
+    else:
+        response = Response(render_template('No results found'))
 
     response.headers.add('Access-Control-Allow-Origin', '*')
+
+    pprint(response)
     return response
     #response.headers['Content-Type'] = 'application/json'
     #return response
     #
+
+def strip_html(html):
+	#from https://stackoverflow.com/a/19730306
+
+	tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
+
+	# Remove well-formed tags, fixing mistakes by legitimate users
+	no_tags = tag_re.sub('', html)
+
+	# Clean up anything else by escaping
+	ready_for_web = cgi.escape(no_tags)
+	return ready_for_web

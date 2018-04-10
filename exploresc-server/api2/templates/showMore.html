@@ -1,5 +1,10 @@
 <div>
-    <div>
-        <p>{{title|safe}}</p>
+    <div class="more-container">
+        <a class="btn" onclick="backToMap();">Back</a>
+
+        {% for doc in docs %}
+        <p><h2><a href="{{doc['url']}}">{{doc['title']}}</a></h2>{{doc['excerpt']}}</p>
+        {% endfor %}
+        <a class="btn" onclick="backToMap();">Back</a>
     </div>
 </div>
