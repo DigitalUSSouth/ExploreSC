@@ -210,7 +210,7 @@ function ready(callback){
   });
   function showMore(obj){
       var markerId = obj.getAttribute('data-link'); 
-      url = "http://192.168.132.144:4000/getRel?link="+encodeURIComponent(markerId);
+      url = "https://exploresc.digitalussouth.org/getRel?link="+encodeURIComponent(markerId);
       callAjax(url,function(response){
         //console.log(response);
         var d = document.getElementById('moreDiv');
