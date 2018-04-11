@@ -74,11 +74,13 @@ def get_rel():
                     }
                     stripped_docs.append(new_doc)
                 response = Response(render_template('showMore.html',title=markers[markerId]['options']['title'],docs=stripped_docs))
+            else:
+                response = Response(render_template('noResults.html'))
         else:
-            response = Response(render_template('No results found'))
+            response = Response(render_template('noResults.html'))
 
     else:
-        response = Response(render_template('No results found'))
+        response = Response(render_template('noResults.html'))
 
     response.headers.add('Access-Control-Allow-Origin', '*')
 
