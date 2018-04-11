@@ -31,7 +31,6 @@
 <link href='mapbox-gl.css' rel='stylesheet' />
 
 <script src="leaflet-mapbox-gl.js"></script>
-
 <script src="mapbox-token.js"></script>
 
 <style>
@@ -65,16 +64,29 @@ a.btn {
     position:absolute;
 bottom:0px;
     left: 0px;
-    z-index: 10000;
+    z-index: 1000;
     padding-bottom:1em;
     padding-left:.5em;
 }
+
+#moreDiv {
+    position:relative;
+
+    height: 100%;
+    width: 100%;
+    z-index: 10000;
+    display:none;
+}
+.more-container{
+    padding:1em;
+}
 </style>
-<script src="markers.js">
+<script src="markers_ios.js">
 </script>
 </head>
 <body>
 <h1 id="location"></h1>
+<div id="moreDiv"></div>
 <div id="mapid">
 </div>
     <div class="bottom-left" id="recenterDiv" style="display:none">
@@ -82,7 +94,6 @@ bottom:0px;
             <a onclick="recenterMap()" class="btn">Recenter</a>
         </div>
     </div>
-
 <script>
 var mymap = L.map('mapid',{zoomControl:false,zoomSnap:0,maxZoom:18})//.setView([33.836081,-81.1637245], 7.5);
 //tileserver = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'
@@ -93,7 +104,6 @@ tileserver = 'https://www.digitalussouth.org/tiles/{z}/{x}/{y}.png'
 
 }).addTo(mymap);*/
 
-
 var gl = L.mapboxGL({
     accessToken: token,
     style: 'mapbox://styles/mapbox/bright-v8'
@@ -101,10 +111,15 @@ var gl = L.mapboxGL({
 
 var mks = L.markerClusterGroup();
 
+var mapMarkers = {}
+
 for (var i = 0; i < markers.length; i++) {
-  mks.addLayer(L.marker(markers[i].latlng,markers[i].options)
-				.bindPopup(markers[i].popup));
+  var marker = L.marker(markers[i].latlng,markers[i].options)
+                .bindPopup(markers[i].popup);
+  mapMarkers[markers[i]['markerId']] = marker;
+  mks.addLayer(marker);
 }
+//console.log(mapMarkers);
 mymap.addLayer(mks)
 console.log(mks.getBounds())
 mymap.fitBounds(mks.getBounds())
@@ -128,7 +143,7 @@ function updateMap(lat,lng,acc){
     lastPos = [lat,lng,acc];
     if (lat==0 || lng==0) return;
     var loc = lat + "," +lng + " -- " + acc;
-    document.getElementById("location").innerHTML = loc
+    //document.getElementById("location").innerHTML = loc
     if (centerMap==true){
         userMove = false;
         mymap.flyTo([lat,lng],mymap.getZoom());
@@ -182,7 +197,7 @@ function ready(callback){
   lastPos = [0,0,0]
   function recenterMap(){
     centerMap = true;
-    if (lat==0 || lng==0) return;
+    if (lastPos[0]==0 || lastPos[1]==0) return;
 
     mymap.flyTo([lastPos[0],lastPos[1]],mymap.getZoom());
     //updateMap(lastPos[0],lastPos[1],lastPos[2]);
@@ -191,8 +206,39 @@ function ready(callback){
   }
 
   ready(function(){
-    window.location = "index.html#getLoc";
+    console.log("page ready")
+    window.open("https://exploresc.digitalusouth.org/getLoc");
   });
+  function showMore(obj){
+      var markerId = obj.getAttribute('data-link'); 
+      url = "https://exploresc.digitalussouth.org/getRel?link="+encodeURIComponent(markerId);
+      callAjax(url,function(response){
+        //console.log(response);
+        var d = document.getElementById('moreDiv');
+        d.style.display = 'block';
+        document.getElementById("recenterDiv").style.display = 'none';
+        document.getElementById("mapid").style.display = 'none';
+        d.innerHTML = response;
+      });
+      //console.log(markerId);
+      return false;
+  }
+  function backToMap(){
+    document.getElementById('moreDiv').style.display = 'none';
+    document.getElementById("recenterDiv").style.display = 'block';
+    document.getElementById("mapid").style.display = 'block';
+  }
+  function callAjax(url, callback){
+    var xmlhttp;
+    xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function(){
+        if (xmlhttp.readyState == 4 && xmlhttp.status == 200){
+            callback(xmlhttp.responseText);
+        }
+    }
+    xmlhttp.open("GET", url, true);
+    xmlhttp.send();
+  }
     </script>
 </body>
 </html>

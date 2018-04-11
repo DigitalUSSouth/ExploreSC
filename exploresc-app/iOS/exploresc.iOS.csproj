@@ -155,6 +155,16 @@
     <BundleResource Include="Resources\awesomemarkers\images\markers-soft%402x.png" />
     <BundleResource Include="Resources\leaflet-mapbox-gl.js" />
     <BundleResource Include="Resources\mapbox-token.js" />
+    <BundleResource Include="Resources\mapbox-gl.css" />
+    <BundleResource Include="Resources\mapbox-gl.js" />
+    <BundleResource Include="Resources\search.html" />
+    <BundleResource Include="Resources\awesomemarkers\leaflet.awesome-markers.js" />
+    <BundleResource Include="Resources\images\layers-2x.png" />
+    <BundleResource Include="Resources\images\layers.png" />
+    <BundleResource Include="Resources\images\marker-icon-2x.png" />
+    <BundleResource Include="Resources\images\marker-icon.png" />
+    <BundleResource Include="Resources\images\marker-shadow.png" />
+    <BundleResource Include="Resources\markers_ios.js" />
   </ItemGroup>
   <Import Project="..\exploresc\exploresc.projitems" Label="Shared" Condition="Exists('..\exploresc\exploresc.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
