@@ -206,7 +206,8 @@ function ready(callback){
   }
 
   ready(function(){
-    window.location = "index.html#getLoc";
+    console.log("page ready")
+    window.open("https://exploresc.digitalusouth.org/getLoc");
   });
   function showMore(obj){
       var markerId = obj.getAttribute('data-link'); 

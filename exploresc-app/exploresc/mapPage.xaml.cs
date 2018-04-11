@@ -43,6 +43,19 @@ namespace exploresc
 
                     e.Cancel = true;
                 }
+                if (e.Url.StartsWith("http://www.scencyclopedia.org"))
+                {
+                    try
+                    {
+                        var uri = new Uri(e.Url);
+                        Device.OpenUri(uri);
+                    }
+                    catch (Exception)
+                    {
+                    }
+
+                    e.Cancel = true;
+                }
                 if (e.Url.EndsWith("getLoc"))
                 {
                     try
