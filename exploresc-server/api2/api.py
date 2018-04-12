@@ -38,6 +38,13 @@ def get_items_near():
     response.headers['Content-Type'] = 'application/json'
     return response
 
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    response = Response("Search Results")
+    #response.headers['Content-Type'] = 'application/json'
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
 @app.route('/getRel', methods=['GET'])
 #@crossdomain(origin='*')
 def get_rel():
