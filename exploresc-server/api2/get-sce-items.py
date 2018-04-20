@@ -38,6 +38,7 @@ for doc in cursor:
     }
     text = docdict['title'] + " " + docdict['content']
     docdict["tokens"],docdict["doc_len"] = tokenize_text(text)
+    docdict["text"] = text
     if post_type in posts:
         posts[post_type].append(docdict)
     else:

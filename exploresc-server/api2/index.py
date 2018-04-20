@@ -1,15 +1,17 @@
 import numpy as np
 import math
-import nlputils
+from nlputils import tokenize_text
 from itertools import repeat
 import numpy as np
-
+import json
+from tqdm import tqdm
+from pprint import pprint
 terms_list = {}
 num_docs = 0
 
 def build_index(corpus):
-  index = {}
   doc_vectors = []
+  pbar = tqdm(total=len(corpus)*2)
   for key,item in corpus.items():
     doc_term_freqs = {}
     tokens,doc_len = tokenize_text(item)
@@ -22,17 +24,22 @@ def build_index(corpus):
         terms_list[token] = [1,term_index]
       doc_term_freqs[token] = get_norm_tf(freq,doc_len)
     doc_vectors.append((doc_term_freqs,key))
+    pbar.update(1)
   num_docs = len(corpus)
   num_terms = len(terms_list)
-  tfidf_array = {key:np.zeros([num_terms],dtype=np.float32]) for key in corpus.keys()}
+  tfidf_array = np.zeros([num_docs,num_terms],dtype=np.float32)
+  counter = 0
   for doc in doc_vectors:
     for term,tf in doc[0].items():
       idf = get_idf(term)
-      tfidf_array[doc[1]][term_index[term]] = tf*idf
-
-  #for doc_vectors in doc_vectors:
-
-    #doc_vector.append(add_doc_to_index(doc))
+      #doc_tfidf = np.zeros([num_terms],dtype=np.float32)
+      #doc_tfidf[counter,terms_list[term][1]] = tf*idf
+      tfidf_array[counter,terms_list[term][1]] = tf*idf
+    counter += 1
+    pbar.update(1)
+  pbar.close()
+  pprint(len(tfidf_array[0]))
+  return tfidf_array
 
 def add_doc_to_index(doc):
   tokens,doc_len = tokenize_text(doc)
@@ -41,15 +48,33 @@ def add_doc_to_index(doc):
       continue
     else:
       terms_list.append(term)
-  #tokens_tf = {list(map(get_tf,tokens,repeat(doc_len)))}
-  #create a dict => {term:term_frequency}
   doc_vector = dict(zip(tokens,list(map(get_tf,tokens,repeat(doc_len)))))
 
 def get_idf(term):
   if not term in terms_list:
     return 0
   return math.log(float(1 + num_docs) / 
-    (1 + terms_list[term]))
+    (1 + terms_list[term][0]))
 
 def get_norm_tf(term_freq,doc_len):
   return term_freq/doc_len
+
+def main():
+  with open("sceposts.json","r") as postsfile:
+    posts = json.loads(postsfile.read())
+  corpus = {}
+  counter = 0
+  for category,cat_items in posts.items():
+    #if not category=='document':
+    #  continue
+    for item in cat_items:
+      corpus[counter] = item['text']
+      counter += 1
+      #print(item)
+      #break
+  index = build_index(corpus)
+  print (type(index))
+  np.savez_compressed("index.npz",index)
+
+if __name__ == "__main__":
+  main()
