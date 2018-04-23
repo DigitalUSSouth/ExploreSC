@@ -88,20 +88,24 @@ def get_rankings(index,terms_list,query):
   for i in range(index.shape[0]):
     vector = index[i]
     cos_sim = cosine_similarity(query_vector,vector)
-    rankings(i,cos_sim)
+    doc_sim = [i,cos_sim]
+    rankings.append(doc_sim)
   rankings.sort(key=itemgetter(1),reverse=True)
   return rankings
 
-def search(query):
-  saved_index = np.load("index.npz")
-  index = saved_index['arr_0']
-  terms_list = saved_index['arr_1'].item()
-  doc_keys = saved_index['arr_2'].item()
+def search(query,index,terms_list,doc_keys):
   rankings = get_rankings(index,terms_list,query)
   results = []
   for key,val in rankings:
     results.append(doc_keys[key])
   return results
+
+def load_index():
+  saved_index = np.load("index.npz")
+  index = saved_index['arr_0']
+  terms_list = saved_index['arr_1'].item()
+  doc_keys = saved_index['arr_2'].item()
+  return index,terms_list,doc_keys
 
 def main():
   with open("sceposts.json","r") as postsfile:
