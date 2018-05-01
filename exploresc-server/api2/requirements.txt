@@ -2,3 +2,5 @@ pymysql
 nltk
 flask
 numpy
+tqdm
+scipy

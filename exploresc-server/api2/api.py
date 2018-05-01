@@ -125,6 +125,49 @@ def get_rel():
     #return response
     #
 
+@app.route('/items', methods=['GET'])
+def view_items():
+    #items = [{'title':"t1",'rel':[1,2,3]},{'title':"t2",'rel':[2,4,6]}]
+    with open("markers_api.json") as file:
+        markers = json.load(file)
+    items = []
+    for id,marker in markers.items():
+        item = {
+            'id':id,
+            'rel':[],
+            'title':marker['options']['title'],
+            'desc':strip_html(marker['text'][:150])
+            }
+        rel_items = []
+        with get_db() as db:
+            for rel in query_db('select * from related_objects where object_id=?',[id]):
+                rel_items.append(rel['related_item'])
+        item['rel'] = rel_items
+        print(rel_items)
+        items.append(item)
+    response = Response(render_template("items.html",items=items))
+    return response
+
+@app.route('/item', methods=['GET'])
+def item_details():
+    id = request.args.get('id')
+    with open("markers_api.json") as file:
+        markers = json.load(file)
+    item = []
+    for key,value in markers[id].items():
+        data = {}
+        data['key'] = key
+        data['value'] = strip_html(str(value))
+        item.append(data)
+    item.append({'key':'title','value':markers[id]['options']['title']})
+    #pprint(markers[id])
+    rel_items = []
+    with get_db() as db:
+        for rel in query_db('select * from related_objects where object_id=?',[id]):
+            rel_items.append(rel['related_item'])
+    response = Response(render_template("item.html",item=item,title=markers[id]['options']['title'],related_items=rel_items))
+    return response
+
 def strip_html(html):
 	#from https://stackoverflow.com/a/19730306
 

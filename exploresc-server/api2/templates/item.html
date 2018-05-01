@@ -1,0 +1,86 @@
+<html>
+    <head>
+        <title>View Items</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css" crossorigin="anonymous">
+        <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/json2html/1.2.0/json2html.min.js"></script>
+        <style>
+            .tiptext {
+    color:#069; 
+    cursor:pointer;
+}
+.preview {
+    display:none;
+    position:absolute;
+    top: 15%;
+    border:1px solid #000;
+    width:500px;
+    height:800px;
+}
+        </style>
+        <script>
+            $(".tiptext").mouseover(function() {
+            $(this).children(".preview").show();
+            }).mouseout(function() {
+            $(this).children(".preview").hide();
+            });
+        </script>
+    </head>
+    <body>
+    <div class="container">
+            <br>
+            <br>
+        <div class="row">
+            <div class="col-xs-9">
+                <h1>{{title}}</h1>
+                {% for data in item %}
+                <strong>{{data['key']}}: </strong>{{data['value']}}<br>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <h2>Related SCE items</h2>
+        <table id="objectTable" class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Item
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in related_items %}
+                <tr>
+                    <td>
+                    <a class="tiptext" href="{{item}}" target="_blank">{{item}}
+                        <iframe class="preview" src="{{item}}"></iframe>
+                    </a>
+                    </td>
+                    <td>
+                    <a class="btn btn-danger">Remove</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        </div>
+        <script>
+        $(document).ready(function() {
+            $('#mainTable').DataTable();
+            $(".tiptext").mouseover(function() {
+            $(this).children(".preview").show();
+            }).mouseout(function() {
+            $(this).children(".preview").hide();
+            });
+        } );
+</script>
+    </body>
+</html>

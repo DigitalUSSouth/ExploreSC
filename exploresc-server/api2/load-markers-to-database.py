@@ -31,21 +31,27 @@ with open("data/sample-data.json", "r") as datafile:
     sample_markers = json.load(datafile)
     datafile.close()
 for item in sample_markers:
-    category = item['properties']['Category']
-    rel = item['properties']['rel']
-    markers[item["properties"]["link1_href"]]['category'] = category
-    markers[item["properties"]["link1_href"]]['rel'] = rel
+    if 'Category' in item['properties']:
+        category = item['properties']['Category']
+        markers[item["properties"]["link1_href"]]['category'] = category
+    if 'rel' in item['properties']:
+        rel = item['properties']['rel']
+        markers[item["properties"]["link1_href"]]['rel'] = rel
 
 with sqlite3.connect('data/database.db') as connection:
-    cursor = connnection.cursor()
-    for key,item in markers:
+    cursor = connection.cursor()
+    for key,item in markers.items():
         if item['category'] is None:
             continue
         if item['rel'] is None:
             continue
         for rel in item['rel']:
+            if rel=="":
+                continue
             cursor.execute("INSERT INTO related_objects (object_id,related_item) VALUES (?,?)",(key,rel))
         for cat in item['category']:
+            if cat is None:
+                continue
             cursor.execute("INSERT INTO categories (object_id,category) VALUES (?,?)",(key,cat))
 
 print(len(markers))
