@@ -153,19 +153,47 @@ def item_details():
     del_rel = request.args.get('del')
     id = request.args.get('id')
     add = request.args.get('add')
+    add_cat = request.args.get('add_cat')
+    del_cat = request.args.get('del_cat')
+    message = request.args.get('msg')
+    if message is None:
+        message = ""
     if del_rel is not None:
         with get_db() as db:
             res = query_db("delete from related_objects where object_id=? and related_item=?",[id,del_rel])
-        return redirect('/item?id='+id)
+        return redirect('/item?id='+id+"&msg=Deleted+item")
     if add is not None:
         with get_db() as db:
             res = query_db("insert into related_objects (object_id,related_item) VALUES (?,?)",[id,add])
-        return redirect('/item?id='+id)
+        return redirect('/item?id='+id+"&msg=Added+item")
+    if del_cat is not None:
+        with open("data/categories.json") as file:
+            cat_dict = json.load(file)
+            cat_key = None
+            for k,v in cat_dict.items():
+                if v==del_cat:
+                    cat_key = k
+        if cat_key is None:
+            return redirect('/item?id='+id+"&msg=Error:+Invalid+category")
+                
+        with get_db() as db:
+            res = query_db("delete from categories where object_id=? and category=?",[id,cat_key])
+        return redirect('/item?id='+id+"&msg=Deleted+category")
+    if add_cat is not None:
+        with open("data/categories.json") as file:
+            cat_dict = json.load(file)
+            if add_cat not in cat_dict:
+                return redirect('/item?id='+id+"&msg=Error:+Invalid+category")
+        with get_db() as db:
+            res = query_db("insert into categories (object_id,category) VALUES (?,?)",[id,add_cat])
+        return redirect('/item?id='+id+"&msg=Added+category")
     with open("markers_api.json") as file:
         markers = json.load(file)
     item = []
     for key,value in markers[id].items():
         data = {}
+        if key=='popup':
+            continue
         data['key'] = key
         data['value'] = strip_html(str(value))
         item.append(data)
@@ -175,7 +203,24 @@ def item_details():
     with get_db() as db:
         for rel in query_db('select * from related_objects where object_id=?',[id]):
             rel_items.append(rel['related_item'])
-    response = Response(render_template("item.html",item=item,title=markers[id]['options']['title'],related_items=rel_items,object_id=id))
+    categories = []
+    with get_db() as db:
+        with open("data/categories.json") as file:
+            cat_dict = json.load(file)
+        for rel in query_db('select * from categories where object_id=?',[id]):
+            if rel['category'] not in cat_dict:
+                continue
+            categories.append(cat_dict[rel['category']])
+    cat_dict= {int(k):v for k,v in cat_dict.items()}
+    response = Response(render_template("item.html",
+        item=item,
+        title=markers[id]['options']['title'],
+        related_items=rel_items,
+        object_id=id,
+        categories=categories,
+        cat_dict=sorted(cat_dict.items()),
+        message_text = message
+        ))
     return response
 
 def strip_html(html):

@@ -17,7 +17,7 @@
             <br>
 
         <div class="row">
-        <table id="mainTable" class="table">
+        <table id="mainTable" class="table table-bordered table-striped">
             <thead>
                 <tr>
                     <th>
@@ -43,9 +43,7 @@
                     {% endfor %}
                     </td>
                     <td>
-                        <a href="item?id={{item['id']}}" class="btn btn-success">Details</a>
-
-                        <a href="edit?id={{item['id']}}" class="btn btn-danger">Edit</a>
+                        <a href="item?id={{item['id']}}" class="btn btn-lg btn-danger">Edit</a>
                     </td>
                 </tr>
                 {% endfor %}
