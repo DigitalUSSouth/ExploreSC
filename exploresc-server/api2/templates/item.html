@@ -64,12 +64,52 @@
                     </a>
                     </td>
                     <td>
-                    <a class="btn btn-danger">Remove</a>
+                    <a class="btn btn-danger" href="item?id={{object_id}}&del={{item}}">Remove</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <h3>Add new item</h3><br>
+                <form method="GET" action="/item" class="form">
+                    <input type="text" name="add">
+                    <input type="hidden" value="{{object_id}}" name="id">
+                    <input type="submit" class="btn btn-primary" value="Add related SCE item">
+                </form>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-xs-12">
+                <h1>Categories</h1>
+                <table id="objectTable" class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Category
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in categories %}
+                            <tr>
+                                <td>
+                                <a class="tiptext" href="{{item}}" target="_blank">{{item}}
+                                    <iframe class="preview" src="{{item}}"></iframe>
+                                </a>
+                                </td>
+                                <td>
+                                <a class="btn btn-danger" href="item?id={{object_id}}&del_cat={{item}}">Remove</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
         </div>
         </div>
         <script>

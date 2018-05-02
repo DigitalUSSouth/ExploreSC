@@ -1,4 +1,4 @@
-from flask import Flask, Response,request,render_template,g
+from flask import Flask, Response,request,render_template,g,redirect
 from pprint import pprint
 import json
 from urllib import request as Req, parse
@@ -150,7 +150,17 @@ def view_items():
 
 @app.route('/item', methods=['GET'])
 def item_details():
+    del_rel = request.args.get('del')
     id = request.args.get('id')
+    add = request.args.get('add')
+    if del_rel is not None:
+        with get_db() as db:
+            res = query_db("delete from related_objects where object_id=? and related_item=?",[id,del_rel])
+        return redirect('/item?id='+id)
+    if add is not None:
+        with get_db() as db:
+            res = query_db("insert into related_objects (object_id,related_item) VALUES (?,?)",[id,add])
+        return redirect('/item?id='+id)
     with open("markers_api.json") as file:
         markers = json.load(file)
     item = []
@@ -165,7 +175,7 @@ def item_details():
     with get_db() as db:
         for rel in query_db('select * from related_objects where object_id=?',[id]):
             rel_items.append(rel['related_item'])
-    response = Response(render_template("item.html",item=item,title=markers[id]['options']['title'],related_items=rel_items))
+    response = Response(render_template("item.html",item=item,title=markers[id]['options']['title'],related_items=rel_items,object_id=id))
     return response
 
 def strip_html(html):
