@@ -168,19 +168,19 @@ def item_details():
         message = ""
     if del_rel is not None:
         if password != pass_word:
-            return redirect('/item?id='+id+"&msg=Invalid+password")
+            return redirect(request.url_root+'/item?id='+id+"&msg=Invalid+password")
         with get_db() as db:
             res = query_db("delete from related_objects where object_id=? and related_item=?",[id,del_rel])
         return redirect('/item?id='+id+"&msg=Deleted+item")
     if add is not None:
         if password != pass_word:
-            return redirect('/item?id='+id+"&msg=Invalid+password")
+            return redirect(request.url_root+'/item?id='+id+"&msg=Invalid+password")
         with get_db() as db:
             res = query_db("insert into related_objects (object_id,related_item) VALUES (?,?)",[id,add])
-        return redirect('/item?id='+id+"&msg=Added+item")
+        return redirect(request.url_root+'/item?id='+id+"&msg=Added+item")
     if del_cat is not None:
         if password != pass_word:
-            return redirect('/item?id='+id+"&msg=Invalid+password")
+            return redirect(request.url_root+'/item?id='+id+"&msg=Invalid+password")
         with open("data/categories.json") as file:
             cat_dict = json.load(file)
             cat_key = None
@@ -188,20 +188,20 @@ def item_details():
                 if v==del_cat:
                     cat_key = k
         if cat_key is None:
-            return redirect('/item?id='+id+"&msg=Error:+Invalid+category")  
+            return redirect(request.url_root+'/item?id='+id+"&msg=Error:+Invalid+category")  
         with get_db() as db:
             res = query_db("delete from categories where object_id=? and category=?",[id,cat_key])
-        return redirect('/item?id='+id+"&msg=Deleted+category")
+        return redirect(request.ur_lroot+'/item?id='+id+"&msg=Deleted+category")
     if add_cat is not None:
         if password != pass_word:
-            return redirect('/item?id='+id+"&msg=Invalid+password")
+            return redirect(request.url_root+'/item?id='+id+"&msg=Invalid+password")
         with open("data/categories.json") as file:
             cat_dict = json.load(file)
             if add_cat not in cat_dict:
-                return redirect('/item?id='+id+"&msg=Error:+Invalid+category")
+                return redirect(request.url_root+'/item?id='+id+"&msg=Error:+Invalid+category")
         with get_db() as db:
             res = query_db("insert into categories (object_id,category) VALUES (?,?)",[id,add_cat])
-        return redirect('/item?id='+id+"&msg=Added+category")
+        return redirect(request.url_root+'/item?id='+id+"&msg=Added+category")
     with open("markers_api.json") as file:
         markers = json.load(file)
     item = []
