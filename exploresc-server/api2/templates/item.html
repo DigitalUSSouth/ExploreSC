@@ -70,7 +70,13 @@
                     </a>
                     </td>
                     <td>
-                    <a class="btn btn-danger" href="item?id={{object_id}}&del={{item}}">Remove</a>
+                        <form method="POST" action="/item" class="form" onsubmit="return confirm('Are you sure you want to DELETE this record?')">
+                            <input type="hidden" value="{{object_id}}" name="id">
+                            <input type="hidden" value="{{item}}" name="del">
+                            Password: <input type="password" name="password">
+                            <input type="submit" class="btn btn-danger" value="Remove">
+                        </form>
+                    
                     </td>
                 </tr>
                 {% endfor %}
@@ -80,9 +86,10 @@
         <div class="row">
             <div class="col-xs-12">
                 <h3>Add new SCE item</h3><br>
-                <form method="GET" action="/item" class="form">
+                <form method="POST" action="/item" class="form">
                     <input type="text" name="add">
                     <input type="hidden" value="{{object_id}}" name="id">
+                    Password: <input type="password" name="password">
                     <input type="submit" class="btn btn-primary" value="Add related SCE item">
                 </form>
             </div>
@@ -107,7 +114,12 @@
                                 <span><strong>{{item}}</strong></span>
                                 </td>
                                 <td>
-                                <a class="btn btn-danger" href="item?id={{object_id}}&del_cat={{item}}">Remove</a>
+                                    <form method="POST" action="/item" class="form" onsubmit="return confirm('Are you sure you want to DELETE this record?')">
+                                        <input type="hidden" value="{{object_id}}" name="id">
+                                        <input type="hidden" value="{{item}}" name="del_cat">
+                                        Password: <input type="password" name="password">
+                                        <input type="submit" class="btn btn-danger" value="Remove">
+                                    </form>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -115,14 +127,16 @@
                     </table>
 
                     <h3>Add new category key</h3><br>
-                    <form method="GET" action="/item" class="form">
+                    <form method="POST" action="/item" class="form">
                         <input type="text" name="add_cat">
                         <input type="hidden" value="{{object_id}}" name="id">
+                        Password: <input type="password" name="password">
                         <input type="submit" class="btn btn-primary" value="Add related SCE item">
                     </form>
             </div>
-            <div class="col-xs-6">
-                <h1>Categories</h1>
+            <div class="col-xs-2">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div class="col-xs-4">
+                <h3>Category list</h3>
                     <table id="objectTable" class="table">
                         <thead>
                             <tr>

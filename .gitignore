@@ -11,6 +11,7 @@ exploresc-server/api2/sceposts.json
 exploresc-server/api2/*markers.json
 exploresc-server/api2/__pycache__/
 exploresc-server/api2/*swp
+exploresc-server/api2/config.py
 exploresc-server/tileserver/sc-latest.pbf
 exploresc-app/iOS/Resources/mapbox-token.js
 exploresc-app/Droid/Assets/mapbox-token.js

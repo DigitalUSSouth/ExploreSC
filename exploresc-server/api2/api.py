@@ -7,6 +7,8 @@ import re,cgi
 import sqlite3
 DATABASE = 'data/database.db'
 
+exec(open("./config.py").read())
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
@@ -143,30 +145,42 @@ def view_items():
             for rel in query_db('select * from related_objects where object_id=?',[id]):
                 rel_items.append(rel['related_item'])
         item['rel'] = rel_items
-        print(rel_items)
+        #print(rel_items)
         items.append(item)
     response = Response(render_template("items.html",items=items))
     return response
 
-@app.route('/item', methods=['GET'])
+@app.route('/item', methods=['GET','POST'])
 def item_details():
-    del_rel = request.args.get('del')
-    id = request.args.get('id')
-    add = request.args.get('add')
-    add_cat = request.args.get('add_cat')
-    del_cat = request.args.get('del_cat')
+    if request.method == 'POST':
+        id = request.values.get('id')
+    else:
+        id = request.args.get('id')
+    del_rel = request.values.get('del')
+    add = request.values.get('add')
+    add_cat = request.values.get('add_cat')
+    del_cat = request.values.get('del_cat')
     message = request.args.get('msg')
+    password = request.values.get('password')
+    if password is None:
+        password = ""
     if message is None:
         message = ""
     if del_rel is not None:
+        if password != pass_word:
+            return redirect('/item?id='+id+"&msg=Invalid+password")
         with get_db() as db:
             res = query_db("delete from related_objects where object_id=? and related_item=?",[id,del_rel])
         return redirect('/item?id='+id+"&msg=Deleted+item")
     if add is not None:
+        if password != pass_word:
+            return redirect('/item?id='+id+"&msg=Invalid+password")
         with get_db() as db:
             res = query_db("insert into related_objects (object_id,related_item) VALUES (?,?)",[id,add])
         return redirect('/item?id='+id+"&msg=Added+item")
     if del_cat is not None:
+        if password != pass_word:
+            return redirect('/item?id='+id+"&msg=Invalid+password")
         with open("data/categories.json") as file:
             cat_dict = json.load(file)
             cat_key = None
@@ -174,12 +188,13 @@ def item_details():
                 if v==del_cat:
                     cat_key = k
         if cat_key is None:
-            return redirect('/item?id='+id+"&msg=Error:+Invalid+category")
-                
+            return redirect('/item?id='+id+"&msg=Error:+Invalid+category")  
         with get_db() as db:
             res = query_db("delete from categories where object_id=? and category=?",[id,cat_key])
         return redirect('/item?id='+id+"&msg=Deleted+category")
     if add_cat is not None:
+        if password != pass_word:
+            return redirect('/item?id='+id+"&msg=Invalid+password")
         with open("data/categories.json") as file:
             cat_dict = json.load(file)
             if add_cat not in cat_dict:
@@ -234,3 +249,6 @@ def strip_html(html):
 	# Clean up anything else by escaping
 	ready_for_web = cgi.escape(no_tags)
 	return ready_for_web
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0',debug=True,port=5000)

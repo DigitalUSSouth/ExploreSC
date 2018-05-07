@@ -4,3 +4,4 @@ flask
 numpy
 tqdm
 scipy
+gunicorn
