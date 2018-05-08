@@ -83,10 +83,32 @@ def get_rel():
     #json_text = json.dumps(posts['image'],ensure_ascii=False,indent=4, sort_keys=True)
     markerId = request.args.get('link')
     if markerId in markers:
+        with get_db() as db:
+            rel_items = []
+            for rel in query_db('select * from related_objects where object_id=?',[markerId]):
+                rel_items.append(rel['related_item'])
+            if rel_items:
+                stripped_docs = []
+                for item in rel_items:
+                    title,excerpt = get_url_details(item)
+                    new_doc = {
+                        'url':item.replace('https','http'),
+                        'title':title,
+                        'excerpt':excerpt
+                    }
+                    stripped_docs.append(new_doc)
+                response = Response(render_template('showMore.html',title=markers[markerId]['options']['title'],docs=stripped_docs))
+                response.headers.add('Access-Control-Allow-Origin', '*')
+                pprint(response)
+                return response
+
         text = markers[markerId]['text']
-        #print(text)
-        query = text.replace(':','').replace('(','').replace(')','').replace('[','').replace(']','')
-        print(query)
+        #excape characters for solr query
+        escape_string = '+-&|!(){}[]^"~*?:\/'
+        query = text[:150]
+        for char in escape_string:
+            query = query.replace(char,' ')
+        #query = text.replace(':','').replace('(','').replace(')','').replace('[','').replace(']','').replace('~','')
         query = parse.quote(strip_html(query))
         url = 'https://www.digitalussouth.org/api?q='+ query +'&start=0&fq[]="South+Carolina+Encyclopedia"&fq_field[]=archive_facet'
         print(url)
@@ -126,6 +148,19 @@ def get_rel():
     #response.headers['Content-Type'] = 'application/json'
     #return response
     #
+
+def get_url_details(url):
+    import lxml.html
+    t = lxml.html.parse(url.replace('https','http'))
+    paragraphs = t.xpath('//p')
+    p1 = ""
+    counter = 0
+    for ps in paragraphs:
+        p1 += ps.text
+        if counter== 2:
+            break
+        counter +=1
+    return t.find(".//title").text, strip_html(p1[:150])
 
 @app.route('/items', methods=['GET'])
 def view_items():
