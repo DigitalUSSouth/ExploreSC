@@ -137,7 +137,7 @@ def view_items():
         item = {
             'id':id,
             'rel':[],
-            'title':marker['options']['title'],
+            'title':strip_html(marker['options']['title']),
             'desc':strip_html(marker['text'][:150])
             }
         rel_items = []
