@@ -58,7 +58,7 @@ def get_items_near():
     lat = request.args.get('lat')
     lng = request.args.get('lng')
     latlng = str(lat)+","+str(lng)
-    r =  Req.Request("http://localhost:8983/solr/duss-indexing/select?q=*%3A*{!geofilt}&sfield=geolocation_machine&pt="+
+    r =  Req.Request("http://localhost:8983/solr/exploresc/select?q=*%3A*{!geofilt}&sfield=geolocation_machine&pt="+
         parse.quote(latlng)+
         '&d=50&sort=geodist()+asc&rows=10&fq=archive:"Historical+Marker+Database"&wt=json&indent=true')
     resp = Req.urlopen(r)
@@ -70,8 +70,23 @@ def get_items_near():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    response = Response("Search Results")
+    #response = Response("Search Results")
+    query = request.args.get('q')
+    print(query)
+    escape_string = '+-&|!(){}[]^"~*?:\/'
+    for char in escape_string:
+        query = query.replace(char,' ')
+        #query = text.replace(':','').replace('(','').replace(')','').replace('[','').replace(']','').replace('~','')
+    query = strip_html(query)
+    print(query)
+    query_url = "http://localhost:8983/solr/exploresc/select?q=title:("+ parse.quote(query) + ")%0Aalternative_title:("+ parse.quote(query) + ")%0Adescription:("+ parse.quote(query) + ")&start=0&rows=20&wt=json&hl=true&hl.simple.pre=<mark>&hl.simple.post=<%2Fmark>&hl.fl=*&facet=true&facet.field=archive_facet&facet.field=contributing_institution_facet&facet.field=subject_heading_facet&facet.field=type_content&facet.field=file_format&facet.field=language&stats=true&stats.field=years&indent=true" 
+    r =  Req.Request(query_url)
+    resp = Req.urlopen(r)
+    pprint(vars(resp))
+    response = Response(resp.read())
     #response.headers['Content-Type'] = 'application/json'
+    #response = Response(query_url)
+    response.headers['Content-Type'] = 'application/json'
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
