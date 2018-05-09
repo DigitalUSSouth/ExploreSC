@@ -43,10 +43,22 @@
         console.log(query)
         safe_query = encodeURIComponent(query)
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://192.168.132.144:4000/search?q='+safe_query);
+        xhr.open('GET', 'http://192.168.132.144:5000/search?q='+safe_query);
         xhr.onload = function() {
             if (xhr.status === 200) {
-                console.log(xhr.responseText);
+                results = JSON.parse(xhr.responseText)
+                if (results.response.numFound == 0){
+                    console.log("no results")
+                }
+                docs = results.response.docs;
+                //console.log(docs)
+                html = ""
+                docs.forEach(function(doc) {
+                    //console.log(doc);
+                    html = html + "<h3><a>"+doc.title+" - "+ doc.alternative_title +"</a></h3>"
+                    html = html + "<p>" + $("<div/>").html(doc.description.substring(0,250)).text() +"</p>"
+                });
+                $("#resultsList").html(html)
             }
             else {
                 console.log('Request failed.  Returned status of ' + xhr.status);
@@ -63,6 +75,10 @@
             <input type="text" name="query" id="query" class="form-control">
             <input type="submit" class="btn btn-large btn-primary">
         </form>
+    </div>
+    <div>
+        <h1 class="text-primary">Search Results:</h1>
+        <div id="resultsList"></div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
