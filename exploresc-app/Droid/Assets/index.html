@@ -211,7 +211,7 @@ function ready(callback){
   });
   function showMore(obj){
       var markerId = obj.getAttribute('data-link'); 
-      url = "https://exploresc.digitalussouth.org/getRel?link="+encodeURIComponent(markerId);
+      url = "https://exploresc.digitalussouth.org/getRel?link="+encodeURIComponent(markerId);//add &json=true for json results
       callAjax(url,function(response){
         //console.log(response);
         var d = document.getElementById('moreDiv');

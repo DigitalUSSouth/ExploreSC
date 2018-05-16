@@ -97,6 +97,11 @@ def get_rel():
         markers = json.load(json_file)
     #json_text = json.dumps(posts['image'],ensure_ascii=False,indent=4, sort_keys=True)
     markerId = request.args.get('link')
+    retJson = request.args.get('json')
+    if retJson=="true":
+        returnJson = True
+    else:
+        returnJson = False
     if markerId in markers:
         with get_db() as db:
             rel_items = []
@@ -112,6 +117,12 @@ def get_rel():
                         'excerpt':excerpt
                     }
                     stripped_docs.append(new_doc)
+                if returnJson:
+                    response =  Response(json.dumps({'title':markers[markerId]['options']['title'],"results":stripped_docs}))
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    response.headers['Content-Type'] = 'application/json'
+                    return response
+
                 response = Response(render_template('showMore.html',title=markers[markerId]['options']['title'],docs=stripped_docs))
                 response.headers.add('Access-Control-Allow-Origin', '*')
                 pprint(response)
@@ -147,13 +158,33 @@ def get_rel():
                         'excerpt':strip_html(doc['full_text'][:150])
                     }
                     stripped_docs.append(new_doc)
+                if returnJson:
+                    response =  Response(json.dumps({'title':markers[markerId]['options']['title'],"results":stripped_docs}))
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    response.headers['Content-Type'] = 'application/json'
+                    return response
                 response = Response(render_template('showMore.html',title=markers[markerId]['options']['title'],docs=stripped_docs))
             else:
+                if returnJson:
+                    response =  Response(json.dumps({"results":"No results"}))
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    response.headers['Content-Type'] = 'application/json'
+                    return response
                 response = Response(render_template('noResults.html'))
         else:
+            if returnJson:
+                    response =  Response(json.dumps({"results":"No results"}))
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    response.headers['Content-Type'] = 'application/json'
+                    return response
             response = Response(render_template('noResults.html'))
 
     else:
+        if returnJson:
+                    response =  Response(json.dumps({"results":"No results"}))
+                    response.headers.add('Access-Control-Allow-Origin', '*')
+                    response.headers['Content-Type'] = 'application/json'
+                    return response
         response = Response(render_template('noResults.html'))
 
     response.headers.add('Access-Control-Allow-Origin', '*')
